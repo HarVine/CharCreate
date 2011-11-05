@@ -1,0 +1,97 @@
+import wx
+import wx.media
+
+class startCreation(wx.Frame):
+    def __init__(self, parent, id):
+        wx.Frame.__init__(self,parent,id,"Character Creation", size = (600,400));
+        rootPanel = wx.Panel(self);
+        
+        newName = wx.TextEntryDialog(None, "Enter Character Name:", "Character Creation - Name", "");
+        if newName.ShowModal() == wx.ID_OK:
+            charName = newName.GetValue();
+        closeButton = wx.Button(rootPanel, label = "Exit.", pos = (130, 10), size = (60,60));
+        self.Bind(wx.EVT_BUTTON, self.closeButton, closeButton);
+        self.Bind(wx.EVT_CLOSE, self.closeWindow);
+
+        newAge = wx.TextEntryDialog(None, "Enter Character Age:", "Character Creation - Age", "");
+        if newAge.ShowModal() == wx.ID_OK:
+            charAge = newAge.GetValue();
+        closeButton = wx.Button(rootPanel, label = "Exit.", pos = (130, 10), size = (60,60));
+        self.Bind(wx.EVT_BUTTON, self.closeButton, closeButton);
+        self.Bind(wx.EVT_CLOSE, self.closeWindow);
+
+        status = self.CreateStatusBar();
+        menuBar = wx.MenuBar();
+        firstMenu = wx.Menu();
+        secondMenu = wx.Menu();
+        firstMenu.Append(wx.NewId(), "Create New Character", "Click to create a new character");
+        firstMenu.Append(wx.NewId(), "Load Existing Character", "Click to load an existing character");
+        menuBar.Append(firstMenu, "File");
+        menuBar.Append(secondMenu, "Options");
+        self.SetMenuBar(menuBar);
+
+        newRace = wx.SingleChoiceDialog(None, "Choose a race for your character:", "Character Creation - Race", ["Human", "Elf", "Dwarf", "Demon", "Orc", "Goblin"]);
+        if newRace.ShowModal() == wx.ID_OK:
+            charRace = newRace.GetStringSelection();
+
+        newClass = wx.SingleChoiceDialog(None, "Choose a class for your character:", "Character Creation - Class", ["Fighter", "Mage", "Archer", "Thief", "Bard", "Cleric"]);
+        if newClass.ShowModal() == wx.ID_OK:
+            charClass = newClass.GetStringSelection();
+    
+        outputRace = wx.StaticText(rootPanel, -1, "Character race: " + str(charRace), (0, 132), (600, -1), wx.ALIGN_CENTER);
+        outputRace.SetForegroundColour("white");
+        outputRace.SetBackgroundColour("blue");
+        outputClass = wx.StaticText(rootPanel, -1, "Character class: " + str(charClass), (0, 144), (600, -1), wx.ALIGN_CENTER);
+        outputClass.SetForegroundColour("white");
+        outputClass.SetBackgroundColour("blue");
+        outputName = wx.StaticText(rootPanel, -1, "Character Name: " + str(charName), (0, 156), (600, -1), wx.ALIGN_CENTER);
+        outputName.SetForegroundColour("white");
+        outputName.SetBackgroundColour("blue");
+        outputAge = wx.StaticText(rootPanel, -1, "Character Age: " + str(charAge), (0, 168), (600, -1), wx.ALIGN_CENTER);
+        outputAge.SetForegroundColour("white");
+        outputAge.SetBackgroundColour("blue");
+        
+        openButton = wx.Image("open.jpg", wx.BITMAP_TYPE_JPEG).ConvertToBitmap();
+        self.openButton = wx.BitmapButton(rootPanel, -1, openButton, pos = (10, 10));
+        self.Bind(wx.EVT_BUTTON, self.openFile, self.openButton);
+        self.openButton.SetDefault();
+
+        saveButton = wx.Image("save.jpg", wx.BITMAP_TYPE_JPEG).ConvertToBitmap();
+        self.saveButton = wx.BitmapButton(rootPanel, -1, saveButton, pos = (72, 10));
+        self.Bind(wx.EVT_BUTTON, self.saveFile, self.saveButton);
+        self.saveButton.SetDefault();
+
+        heightSlider = wx.Slider(rootPanel, -1, 5, 1, 10, pos = (10, 184), size = (250, -1), style = wx.SL_AUTOTICKS | wx.SL_LABELS);
+        heightSlider.SetTickFreq(1,1);
+
+    def openFile(self, event):
+        self.Destroy();
+    def saveFile(self, event):
+        fileObj = open(userFile,"w");
+        fileObj.write("charName = " + str(charName));
+        print
+        fileObj.write("charAge = " + str(charAge));
+        print
+        fileObj.write("charRace = " + str(charRace));
+        print
+        fileObj.write("charClass = " + str(charClass));
+        fileObj.close();
+
+        
+##        box = wx.MessageDialog(None, "Do you wish to make a new character?", "New Character", wx.YES_NO);
+##        answer = box.ShowModal();
+##        box.Destroy();
+        
+    def closeButton(self, event):
+        self.Close(True);
+
+    def closeWindow(self, event):
+        self.Destroy();
+
+
+        
+if __name__ == "__main__":
+    app=wx.PySimpleApp();
+    frame = startCreation(parent = None, id = -1);
+    frame.Show();
+    app.MainLoop();
